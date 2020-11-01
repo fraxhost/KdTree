@@ -1,10 +1,57 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
 public class KdTree {
 
-    public static final int k = 2;
+    Scanner input;
+    private int k;
+    private Node root;
 
-    Node root;
+    KdTree() {
+        input = new Scanner(System.in);
+    }
 
-    public void add(int[] value) {
+    public void run() {
+        System.out.print("Enter K: ");
+        k =  input.nextInt();
+
+        System.out.print("1# Add Points\n2# Search\n3# Print\n4# Exit\nEnter Choice: ");
+        int option = input.nextInt();
+
+        while (option!=4) {
+            if (option==1) {
+                System.out.println("Enter point:");
+
+                int[] array = new int[k];
+
+                for (int i=0; i<k; i++) {
+                    array[i] = input.nextInt();
+                }
+
+                add(array);
+            }
+            else if (option==2) {
+                System.out.println("Enter point: ");
+
+                int[] array = new int[k];
+
+                for (int i=0; i<k; i++) {
+                    array[i] = input.nextInt();
+                }
+
+                search(array);
+            }
+            else if (option==3) {
+                printDirectory(root, 0, -1);
+            }
+
+            System.out.print("1# Add Points\n2# Search\n3# Print\n4# Exit\nEnter Choice: ");
+            option = input.nextInt();
+        }
+
+    }
+
+    private void add(int[] value) {
         root = addRecursive(root, value, 0);
     }
 
@@ -38,8 +85,10 @@ public class KdTree {
         return true;
     }
 
-    public boolean search(int[] value){
-        return searchRecursive(root, value, 0);
+    private void search(int[] value){
+        if (!searchRecursive(root, value, 0)) {
+            System.out.println("Point not Found!");
+        }
     }
 
     private boolean searchRecursive(Node current, int[] value, int depth){
@@ -49,8 +98,9 @@ public class KdTree {
         if(arePointsSame(current.value, value)) {
             int dimension = (depth%k);
 
-            System.out.print("-- Depth: " + depth);
-            System.out.println(" -- Dimension: " + dimension + ",");
+            System.out.print("Point Found");
+            System.out.print(", Depth: " + depth);
+            System.out.println(", Dimension: " + dimension + ",");
             return true;
         }
 
@@ -64,89 +114,29 @@ public class KdTree {
         }
     }
 
-    void printInorder(Node node)
-    {
-        if (node == null)
-            return;
+    private void printDirectory(Node node, int depth, int left) {
+        if (node == null) return;
 
-        /* first recur on left child */
-        printInorder(node.left);
+        // printing
+        String direction = "";
+        if(left==1) direction = "l: ";
+        else if (left==0) direction = "r: ";
+        else direction = "";
+        System.out.println(createSpace(depth) + direction + "point[" + node.value[0] + ", " + node.value[1] + "]"
+                + ", depth: " + depth + ", dimension: " + depth%k);
 
-        /* then print the data of node */
-        System.out.print("Point: [" + node.value[0] + "," + node.value[1] + "] ");
-        search(node.value);
+        printDirectory(node.left, depth+1, 1);
 
-        /* now recur on right child */
-        printInorder(node.right);
+        printDirectory(node.right, depth+1, 0);
+    }
+
+    private String createSpace(int depth) {
+        String space = "";
+        for (int i=0; i<depth; i++) {
+            space += " ";
+        }
+        return space;
     }
 
 }
 
-/*
-    public void add(int value) {
-        root = addRecursive(root, value);
-    }
-
-    private Node addRecursive(Node current, int value) {
-        // If current node is null
-        if(current == null) {
-            return new Node(value);
-        }
-
-        // If current node is not null
-        if(value < current.value) {
-            current.left = addRecursive(current.left, value);
-        } else if (value > current.value) {
-            current.right = addRecursive(current.right, value);
-        } else {
-            // value already exists
-            return current;
-        }
-
-        return current;
-    }
-
-    private KdTree createKdTree() {
-        KdTree kdt = new KdTree();
-
-        kdt.add(6);
-        kdt.add(4);
-        kdt.add(8);
-        kdt.add(3);
-        kdt.add(5);
-        kdt.add(7);
-        kdt.add(9);
-
-        return kdt;
-    }
-
-    // Finding an Element
-    public boolean containsNode(int value) {
-        return containsNodeRecursive(root, value);
-    }
-
-    private boolean containsNodeRecursive(Node current, int value) {
-        if(current == null) {
-            return false;
-        }
-
-        if(value == current.value) {
-            return true;
-        }
-        else if(value < current.value) {
-            return containsNodeRecursive(current.left, value);
-        }
-        else {
-            // if(value > current.value)
-            return containsNodeRecursive(current.right, value);
-        }
-    }
-
-    public void checkNodes(){
-        KdTree kdt = createKdTree();
-
-        if (kdt.containsNode(6)) System.out.println("6 is present");
-        if (kdt.containsNode(4)) System.out.println("4 is present");
-        if (kdt.containsNode(1)) System.out.println("1 is present");
-    }
-*/
