@@ -21,24 +21,18 @@ public class KdTree {
         while (option!=4) {
             if (option==1) {
                 System.out.println("Enter point:");
-
                 int[] array = new int[k];
-
                 for (int i=0; i<k; i++) {
                     array[i] = input.nextInt();
                 }
-
                 add(array);
             }
             else if (option==2) {
                 System.out.println("Enter point: ");
-
                 int[] array = new int[k];
-
                 for (int i=0; i<k; i++) {
                     array[i] = input.nextInt();
                 }
-
                 search(array);
             }
             else if (option==3) {
@@ -95,6 +89,7 @@ public class KdTree {
         if(current == null) {
             return false;
         }
+
         if(arePointsSame(current.value, value)) {
             int dimension = (depth%k);
 
@@ -122,7 +117,14 @@ public class KdTree {
         if(left==1) direction = "l: ";
         else if (left==0) direction = "r: ";
         else direction = "";
-        System.out.println(createSpace(depth) + direction + "point[" + node.value[0] + ", " + node.value[1] + "]"
+
+        String printNodes = "";
+        for (int i=0; i<k; i++) {
+            printNodes += node.value[i];
+            if(i!=k-1) printNodes += ", ";
+        }
+
+        System.out.println(createSpace(depth) + direction + "point[" + printNodes + "]"
                 + ", depth: " + depth + ", dimension: " + depth%k);
 
         printDirectory(node.left, depth+1, 1);
